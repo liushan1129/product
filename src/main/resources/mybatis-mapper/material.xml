@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.MaterialMapper" >
+
+    <resultMap id="materialMap" type="com.bean.material.Material" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="partnerId" property="partnerId" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="intoTime" property="intoTime" jdbcType="TIMESTAMP" />
+        <result column="totalMeter" property="totalMeter" jdbcType="INTEGER" />
+        <result column="money" property="money" jdbcType="DOUBLE" />
+        <!--<result column="realMeter" property="realMeter" jdbcType="INTEGER" />-->
+        <!--<result column="nextgiveTime" property="nextgiveTime" jdbcType="TIMESTAMP" />-->
+        <!--<result column="lastgiveMeter" property="lastgiveMeter" jdbcType="INTEGER" />-->
+        <result column="addTime" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="addUserId" property="addUserId" jdbcType="INTEGER" />
+        <!--<result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />-->
+        <!--<result column="updateUserId" property="updateUserId" jdbcType="INTEGER" />-->
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="material_list">
+--         id, partnerId, name, intoTime, totalMeter, realMeter, nextgiveTime, lastgiveMeter, addTime, addUserId, updateTime, updateUserId, remark
+        id, partnerId, name, intoTime, totalMeter, money, addTime, addUserId, remark
+    </sql>
+    <sql id="select_where">
+        <where>
+            1=1
+            <if test="name != null and 'name' != ''">
+                and name like '%${name}%'
+            </if>
+            <if test="partnerId != null and 'partnerId' != ''">
+                and partnerId = #{partnerId}
+            </if>
+        </where>
+    </sql>
+    <sql id="update_set">
+        <set>
+            <trim prefix="" prefixOverrides=",">
+
+                <if test="material.name != null">
+                    , name = #{material.name}
+                </if>
+                <if test="material.totalMeter != null">
+                    , totalMeter = #{material.totalMeter}
+                </if>
+
+            </trim>
+        </set>
+    </sql>
+    <select id="findMaterialListByParams" resultType="material" >
+        select
+          <include refid="material_list"></include>
+        from material
+          <include refid="select_where"></include>
+
+    </select>
+
+    <select id="getMaterialByField" resultMap="materialMap">
+        select
+        <include refid="material_list"></include>
+        from material where ${filedName} = #{filedValue}
+    </select>
+
+    <insert id="addMaterial" parameterType="Material" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        insert into
+--         material(partnerId, name, intoTime, totalMeter, realMeter, nextgiveTime, lastgiveMeter, addTime, addUserId, updateTime, updateUserId, remark)
+        material(partnerId, name, intoTime, totalMeter, money, addTime, addUserId, remark)
+        values(#{partnerId}, #{name}, #{intoTime}, #{totalMeter}, #{money}, #{addTime}, #{addUserId}, #{remark})
+    </insert>
+
+    <update id="updateMaterial" parameterType="Material" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        update material
+        <include refid="update_set"></include>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePartner" parameterType="Material">
+        delete from partner where id = #{id}
+    </delete>
+</mapper>

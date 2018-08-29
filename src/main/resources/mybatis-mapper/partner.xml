@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.PartnerMapper" >
+
+    <resultMap id="partnerMap" type="com.bean.partner.Partner" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="pName" property="pName" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="userName" property="userName" jdbcType="VARCHAR" />
+        <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+        <result column="descript" property="descript" jdbcType="VARCHAR" />
+        <result column="addTime" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="addUserId" property="addUserId" jdbcType="INTEGER" />
+        <result column="mark" property="mark" jdbcType="INTEGER" />
+    </resultMap>
+
+    <sql id="partner_list">
+        id, pName, address, userName, mobile, address, descript, addTime, addUserId, mark
+    </sql>
+    <sql id="select_where">
+        <where>
+            1=1
+            <if test="pName != null and 'pName' != ''">
+                and pName like '%${pName}%'
+            </if>
+            <if test="userName != null and 'userName' != ''">
+                and userName like '%${userName}%'
+            </if>
+            <if test="mobile != null and 'mobile' != ''">
+                and mobile = #{mobile}
+            </if>
+            <if test="address != null and 'address' != ''">
+                and address = #{address}
+            </if>
+            <if test="addTime != null and 'addTime' != ''">
+                and addTime = #{addTime}
+            </if>
+            <if test="mark != null and 'mark' != ''">
+                and mark = #{mark}
+            </if>
+        </where>
+    </sql>
+    <sql id="update_set">
+        <set>
+            <trim prefix="" prefixOverrides=",">
+
+                <if test="partner.pName != null">
+                    , pName = #{partner.pName}
+                </if>
+                <if test="partner.userName != null">
+                    , userName = #{partner.userName}
+                </if>
+                <if test="partner.mobile != null">
+                    , mobile = #{partner.mobile}
+                </if>
+                <if test="partner.address != null">
+                    , address = #{partner.address}
+                </if>
+            </trim>
+        </set>
+    </sql>
+    <select id="findPartnerListByParams" resultType="Partner" >
+        select
+          <include refid="partner_list"></include>
+        from partner
+          <include refid="select_where"></include>
+
+    </select>
+
+    <select id="getPartnerByField" resultMap="partnerMap">
+        select
+        <include refid="partner_list"></include>
+        from partner where ${filedName} = #{filedValue}
+    </select>
+
+    <insert id="addPartner" parameterType="Partner" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        insert into
+        partner(pName, userName, mobile, address, descript, addTime, addUserId, mark)
+        values(#{pName}, #{userName}, #{mobile}, #{address}, #{descript}, #{addTime}, #{addUserId}, #{mark})
+    </insert>
+
+    <update id="updatePartner" parameterType="Partner" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        update partner
+        <include refid="update_set"></include>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePartner" parameterType="Partner">
+        delete from partner where id = #{id}
+    </delete>
+</mapper>

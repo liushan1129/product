@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.ProductsMapper" >
+
+    <resultMap id="productsMap" type="com.bean.products.Products" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="productNO" property="productNO" jdbcType="VARCHAR" />
+        <result column="typeId" property="typeId" jdbcType="INTEGER" />
+        <result column="quantity" property="quantity" jdbcType="INTEGER" />
+        <result column="addTime" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="addUserId" property="addUserId" jdbcType="INTEGER" />
+        <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="updateUserId" property="updateUserId" jdbcType="INTEGER" />
+        <result column="updateReason" property="updateReason" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="products_list">
+        id, productNO, typeId, quantity, addTime, addUserId, updateTime, updateUserId, updateReason
+    </sql>
+    <sql id="select_where">
+        <where>
+            1=1
+            <if test="productNO != null and 'productNO' != ''">
+                and productNO = #{productNO}
+            </if>
+        </where>
+    </sql>
+    <sql id="update_set">
+        <set>
+            <trim prefix="" prefixOverrides=",">
+
+                <if test="products.typeId != null">
+                    , typeId = #{products.typeId}
+                </if>
+                <if test="products.quantity != null">
+                    , quantity = #{products.quantity}
+                </if>
+                <if test="products.updateReason != null">
+                    , updateReason = #{products.updateReason}
+                </if>
+            </trim>
+        </set>
+    </sql>
+    <select id="findProductsListByParams" resultType="Products" >
+        select
+          <include refid="products_list"></include>
+        from products
+          <include refid="select_where"></include>
+
+    </select>
+
+    <select id="getProductsByField" resultMap="productsMap">
+        select
+        <include refid="products_list"></include>
+        from products where ${filedName} = #{filedValue}
+    </select>
+
+    <insert id="addProducts" parameterType="Products" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        insert into
+        products(productNO, typeId, quantity, addTime, addUserId, updateTime, updateUserId, updateReason)
+        values(#{productNO}, #{typeId}, #{quantity}, #{addTime}, #{addUserId}, #{updateTime}, #{updateUserId}, #{updateReason})
+    </insert>
+
+    <update id="updateProducts" parameterType="Products" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        update products
+        <include refid="update_set"></include>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProducts" parameterType="Products">
+        delete from products where id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.UserMapper" >
+
+    <resultMap id="userMap" type="com.bean.user.User" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="userName" property="userName" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="realmId" property="realmId" jdbcType="VARCHAR" />
+        <result column="addTime" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="addUserId" property="addUserId" jdbcType="INTEGER" />
+    </resultMap>
+
+    <sql id="user_list">
+        id, userName, password , mobile, address, realmId, addTime, addUserId
+    </sql>
+    <sql id="select_where">
+        <where>
+            1=1
+            <if test="userName != null and 'userName' != ''">
+                and userName like '%${userName}%'
+            </if>
+            <if test="mobile != null and 'mobile' != ''">
+                and mobile like '%${mobile}%'
+            </if>
+            <if test="address != null and 'address' != ''">
+                and address like '%${address}%'
+            </if>
+            <if test="startTime != null and 'startTime' != '' and endTime != null and 'endTime' != ''">
+                and addTime >= #{startTime} and addTime >= #{endTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="update_set">
+        <set>
+            <trim prefix="" prefixOverrides=",">
+                <if test="user.userName != null">
+                    , userName = #{user.userName}
+                </if>
+                <if test="user.password != null">
+                    , password = #{user.password}
+                </if>
+                <if test="user.mobile != null">
+                    , mobile = #{user.mobile}
+                </if>
+                <if test="user.address != null">
+                    , address = #{user.address}
+                </if>
+            </trim>
+        </set>
+    </sql>
+    <select id="findUserList" resultType="User" >
+        select
+          <include refid="user_list"></include>
+        from user
+    </select>
+
+    <select id="findUserListByParams" resultType="User" >
+        select
+        <include refid="user_list"></include>
+        from user
+        <include refid="select_where"></include>
+
+    </select>
+
+    <select id="findUserByNameAndMobile" resultMap="userMap">
+        select
+          <include refid="user_list"></include>
+        from user where userName = #{userName} and mobile = #{mobile}
+    </select>
+    <select id="getUserByField" resultMap="userMap">
+        select
+        <include refid="user_list"></include>
+        from user where ${filedName} = #{filedValue}
+    </select>
+
+    <insert id="addUser" parameterType="User" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        insert into
+        user(userName, password, mobile, address, realmId, addTime, addUserId)
+        values(#{userName}, #{password}, #{mobile}, #{address}, #{realmId}, #{addTime}, #{addUserId})
+    </insert>
+
+    <update id="updateUser" parameterType="User" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        update user
+        <include refid="update_set"></include>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="User">
+        delete from user where id = #{id}
+    </delete>
+</mapper>

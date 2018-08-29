@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.TypeMapper" >
+
+    <resultMap id="typeMap" type="com.bean.type.Stype" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="addTime" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="addUserId" property="addUserId" jdbcType="INTEGER" />
+    </resultMap>
+
+    <sql id="type_list">
+        id, name, addTime, addUserId
+    </sql>
+    <sql id="select_where">
+        <where>
+            1=1
+            <if test="name != null and 'name' != ''">
+                and name like '%${name}%'
+            </if>
+        </where>
+    </sql>
+    <sql id="update_set">
+        <set>
+            <trim prefix="" prefixOverrides=",">
+
+                <if test="type.name != null">
+                    , name = #{type.name}
+                </if>
+            </trim>
+        </set>
+    </sql>
+    <select id="findTypeListByParams" resultType="Stype" >
+        select
+          <include refid="type_list"></include>
+        from stype
+          <include refid="select_where"></include>
+
+    </select>
+
+    <select id="getTypeByField" resultMap="typeMap">
+        select
+        <include refid="type_list"></include>
+        from stype where ${filedName} = #{filedValue}
+    </select>
+
+    <insert id="addType" parameterType="Stype" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        insert into
+        stype(name, addTime, addUserId)
+        values(#{name}, #{addTime}, #{addUserId})
+    </insert>
+
+    <update id="updateType" parameterType="Stype" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        update stype
+        <include refid="update_set"></include>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteType" parameterType="Stype">
+        delete from stype where id = #{id}
+    </delete>
+</mapper>

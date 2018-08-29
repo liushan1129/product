@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.SaleMapper" >
+
+    <resultMap id="saleMap" type="com.bean.sale.Sale" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="typeId" property="typeId" jdbcType="INTEGER" />
+        <result column="saleNum" property="saleNum" jdbcType="INTEGER" />
+        <result column="partnerId" property="partnerId" jdbcType="INTEGER" />
+        <result column="saleTime" property="saleTime" jdbcType="TIMESTAMP" />
+        <result column="addTime" property="addTime" jdbcType="TIMESTAMP" />
+        <result column="addUserId" property="addUserId" jdbcType="INTEGER" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="sale_list">
+        id, typeId, saleNum, partnerId, saleTime, addTime, addUserId, remark
+    </sql>
+    <sql id="select_where">
+        <where>
+            1=1
+            <if test="typeId != null and 'typeId' != ''">
+                and typeId = #{typeId}
+            </if>
+        </where>
+    </sql>
+    <sql id="update_set">
+        <set>
+            <trim prefix="" prefixOverrides=",">
+
+                <if test="sale.typeId != null">
+                    , typeId = #{sale.typeId}
+                </if>
+                <if test="sale.saleNum != null">
+                    , saleNum = #{sale.saleNum}
+                </if>
+                <if test="sale.remark != null">
+                    , remark = #{sale.remark}
+                </if>
+            </trim>
+        </set>
+    </sql>
+    <select id="findSaleListByParams" resultType="Sale" >
+        select
+          <include refid="sale_list"></include>
+        from sale
+          <include refid="select_where"></include>
+
+    </select>
+
+    <select id="getSaleByField" resultMap="saleMap">
+        select
+        <include refid="sale_list"></include>
+        from sale where ${filedName} = #{filedValue}
+    </select>
+
+    <insert id="addSale" parameterType="Sale" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        insert into
+        sale(typeId, saleNum, partnerId, saleTime, addTime, addUserId, remark)
+        values(#{typeId}, #{saleNum}, #{partnerId}, #{saleTime}, #{addTime}, #{addUserId}, #{remark})
+    </insert>
+
+    <update id="updateSale" parameterType="Sale" flushCache="true" statementType="PREPARED" keyProperty="id" useGeneratedKeys="false" timeout="20">
+        update sale
+        <include refid="update_set"></include>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSale" parameterType="Sale">
+        delete from sale where id = #{id}
+    </delete>
+</mapper>
