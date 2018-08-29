@@ -7,7 +7,6 @@ public class Material implements Serializable {
 
     //id
     private Long id;
-    //Git create branch
     //厂商id
     private Long partnerId;
     //原料名称
@@ -18,22 +17,26 @@ public class Material implements Serializable {
     private Integer totalMeter;
     //金额
     private Double money;
+    //添加人
+    private Long addUserId;
+    //添加时间
+    private Timestamp addTime;
+    //备注
+    private String remark;
+
+
+    //TODO 暂时不用，后期考虑
 //    //实际得到数
 //    private Integer realMeter;
 //    //下次约定交货时间
 //    private Timestamp nextgiveTime;
 //    //最后一次给的米数
 //    private Integer lastgiveMeter;
-    //添加人
-    private Long addUserId;
-    //添加时间
-    private Timestamp addTime;
 //    //修改人
 //    private Long updateUserId;
 //    //修改时间
 //    private Timestamp updateTime;
-    //备注
-    private String remark;
+
 
     public Long getId() {
         return id;
@@ -83,30 +86,6 @@ public class Material implements Serializable {
         this.money = money;
     }
 
-    //    public Integer getRealMeter() {
-//        return realMeter;
-//    }
-//
-//    public void setRealMeter(Integer realMeter) {
-//        this.realMeter = realMeter;
-//    }
-//
-//    public Timestamp getNextgiveTime() {
-//        return nextgiveTime;
-//    }
-//
-//    public void setNextgiveTime(Timestamp nextgiveTime) {
-//        this.nextgiveTime = nextgiveTime;
-//    }
-//
-//    public Integer getLastgiveMeter() {
-//        return lastgiveMeter;
-//    }
-//
-//    public void setLastgiveMeter(Integer lastgiveMeter) {
-//        this.lastgiveMeter = lastgiveMeter;
-//    }
-
     public Long getAddUserId() {
         return addUserId;
     }
@@ -122,22 +101,6 @@ public class Material implements Serializable {
     public void setAddTime(Timestamp addTime) {
         this.addTime = addTime;
     }
-
-//    public Long getUpdateUserId() {
-//        return updateUserId;
-//    }
-//
-//    public void setUpdateUserId(Long updateUserId) {
-//        this.updateUserId = updateUserId;
-//    }
-//
-//    public Timestamp getUpdateTime() {
-//        return updateTime;
-//    }
-//
-//    public void setUpdateTime(Timestamp updateTime) {
-//        this.updateTime = updateTime;
-//    }
 
     public String getRemark() {
         return remark;
