@@ -7,6 +7,7 @@ public class Material implements Serializable {
 
     //id
     private Long id;
+    //Git create branch
     //厂商id
     private Long partnerId;
     //原料名称
